@@ -1,0 +1,207 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#100b1c">
+<title>Lock In — Reset Your Life</title>
+<style>
+:root{color-scheme:dark;--bg:#100b1c;--panel:#1d1530;--purple:#a78bfa;--text:#f4efff;--muted:#b6a9cc;--border:#392b50}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;padding:22px 16px 45px}
+main{max-width:650px;margin:auto}
+header{padding:22px 4px}
+.eyebrow{color:var(--purple);font-weight:700;letter-spacing:2px;font-size:12px}
+h1{font-size:36px;margin:8px 0}
+p{color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat,.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px}
+.stat strong{display:block;font-size:24px;color:var(--purple)}
+.stat span{font-size:12px;color:var(--muted)}
+.progress{height:8px;background:#382a4e;border-radius:9px;overflow:hidden;margin:12px 0}
+#bar{height:100%;width:0;background:var(--purple);transition:width .2s}
+h2{font-size:19px;margin:0 0 14px}
+form{display:flex;gap:8px;margin-bottom:12px}
+input,textarea{min-width:0;width:100%;background:#120d20;border:1px solid var(--border);border-radius:10px;padding:12px;color:white;font:inherit}
+textarea{resize:vertical}
+button{background:var(--purple);color:#1a102b;border:0;border-radius:10px;padding:11px 14px;font-weight:750;font-size:14px;cursor:pointer}
+button:active{opacity:.8}
+ul{list-style:none;padding:0;margin:0}
+li{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);overflow-wrap:anywhere}
+li:last-child{border-bottom:0}
+li label{flex:1;min-width:0}
+li input[type=checkbox]{width:19px;height:19px;accent-color:var(--purple);flex-shrink:0}
+.done{text-decoration:line-through;color:var(--muted)}
+.remove{background:#38243c;color:#ffb4c0;padding:7px 10px}
+.empty{font-size:13px;color:var(--muted);padding:8px 0}
+.small{font-size:12px;color:var(--muted)}
+#reflection{min-height:110px;margin-bottom:10px}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:14px}
+</style>
+</head>
+<body>
+<main>
+<header>
+<div class="eyebrow">YOUR RESET STARTS NOW</div>
+<h1>🔒 Lock In</h1>
+<p>Small steps. Better habits. A stronger you.</p>
+</header>
+
+<div class="stats">
+<div class="stat"><strong id="xp">0</strong><span>Total XP</span></div>
+<div class="stat"><strong id="level">1</strong><span>Level</span></div>
+<div class="stat"><strong id="completed">0</strong><span>Completed today</span></div>
+</div>
+
+<section class="panel">
+<strong id="levelLabel">Level 1 · Beginner</strong>
+<div class="progress"><div id="bar"></div></div>
+<div class="small" id="progressText">0 / 100 XP to next level</div>
+</section>
+
+<section class="panel">
+<h2>✅ My Tasks</h2>
+<form id="taskForm"><input id="taskInput" placeholder="What needs doing?" required maxlength="120"><button>Add</button></form>
+<ul id="tasks"></ul>
+</section>
+
+<section class="panel">
+<h2>🌱 My Habits</h2>
+<form id="habitForm"><input id="habitInput" placeholder="Build a good habit..." required maxlength="120"><button>Add</button></form>
+<ul id="habits"></ul>
+</section>
+
+<section class="panel">
+<h2>🎯 My Goals</h2>
+<form id="goalForm"><input id="goalInput" placeholder="Something I want to achieve..." required maxlength="160"><button>Add</button></form>
+<ul id="goals"></ul>
+</section>
+
+<section class="panel">
+<h2>📓 Daily Reflection</h2>
+<p class="small">What went well today? What can you improve tomorrow?</p>
+<textarea id="reflection" placeholder="Write your thoughts here..."></textarea>
+<button id="saveReflection">Save reflection</button>
+<span id="reflectionStatus" class="small"></span>
+</section>
+
+<section class="panel">
+<h2>🔄 Fresh Start</h2>
+<p class="small">Remove your tasks, habits, goals, and reflections from this browser.</p>
+<button id="reset" class="remove">Reset all data</button>
+</section>
+
+<footer>One day at a time. Keep showing up. 💜</footer>
+</main>
+
+<script>
+const KEY = "lockInDataV1";
+const $ = id => document.getElementById(id);
+const today = () => new Date().toLocaleDateString("en-CA");
+
+function fresh(){
+ return {xp:0,tasks:[],habits:[],goals:[],reflections:{},day:today(),doneToday:0};
+}
+function load(){
+ try{
+  const saved=JSON.parse(localStorage.getItem(KEY));
+  return saved && Array.isArray(saved.tasks) ? {...fresh(),...saved} : fresh();
+ }catch(e){return fresh();}
+}
+let data=load();
+
+function save(){
+ try{
+  localStorage.setItem(KEY,JSON.stringify(data));
+  return true;
+ }catch(e){
+  alert("Your browser could not save data. Check browser storage settings.");
+  return false;
+ }
+}
+function refreshDay(){
+ if(data.day!==today()){
+  data.day=today();
+  data.doneToday=0;
+  data.tasks.forEach(x=>x.done=false);
+  data.habits.forEach(x=>x.done=false);
+  save();
+ }
+}
+function escapeText(s){
+ return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function award(item){
+ if(item.done){data.xp+=10;data.doneToday++;}
+ else{data.xp=Math.max(0,data.xp-10);data.doneToday=Math.max(0,data.doneToday-1);}
+ save();renderStats();
+}
+function renderList(id,items,type){
+ const ul=$(id);
+ ul.innerHTML="";
+ if(!items.length){
+  ul.innerHTML='<li class="empty">Nothing here yet — add your first one!</li>';
+  return;
+ }
+ items.forEach(item=>{
+  const li=document.createElement("li");
+  li.innerHTML='<input type="checkbox" '+(item.done?'checked':'')+' aria-label="Mark complete"><label class="'+(item.done?'done':'')+'">'+escapeText(item.text)+'</label><button class="remove" aria-label="Delete item">×</button>';
+  li.querySelector('input').addEventListener('change',e=>{
+   item.done=e.target.checked;award(item);renderList(id,items,type);
+  });
+  li.querySelector('button').addEventListener('click',()=>{
+   if(item.done){data.doneToday=Math.max(0,data.doneToday-1);data.xp=Math.max(0,data.xp-10);}
+   data[type]=items.filter(x=>x.id!==item.id);
+   save();render();
+  });
+  ul.appendChild(li);
+ });
+}
+function renderStats(){
+ const level=Math.floor(data.xp/100)+1;
+ const inLevel=data.xp%100;
+ $("xp").textContent=data.xp;
+ $("level").textContent=level;
+ $("completed").textContent=data.doneToday;
+ $("levelLabel").textContent="Level "+level+" · "+(level<3?"Beginner":level<6?"Building Momentum":"Locked In");
+ $("bar").style.width=inLevel+"%";
+ $("progressText").textContent=inLevel+" / 100 XP to next level";
+}
+function render(){
+ refreshDay();
+ renderStats();
+ renderList("tasks",data.tasks,"tasks");
+ renderList("habits",data.habits,"habits");
+ renderList("goals",data.goals,"goals");
+ $("reflection").value=data.reflections[today()]||"";
+ $("reflectionStatus").textContent="";
+}
+function addItem(formId,inputId,type){
+ $(formId).addEventListener("submit",e=>{
+  e.preventDefault();
+  const text=$(inputId).value.trim();
+  if(!text)return;
+  data[type].push({id:Date.now().toString()+Math.random().toString(16).slice(2),text,done:false});
+  $(inputId).value="";
+  save();render();
+ });
+}
+addItem("taskForm","taskInput","tasks");
+addItem("habitForm","habitInput","habits");
+addItem("goalForm","goalInput","goals");
+
+$("saveReflection").addEventListener("click",()=>{
+ data.reflections[today()]=$("reflection").value;
+ if(save())$("reflectionStatus").textContent=" Saved on this device ✓";
+});
+$("reset").addEventListener("click",()=>{
+ if(confirm("Delete all Lock In data saved in this browser?")){
+  data=fresh();save();render();
+ }
+});
+render();
+</script>
+</body>
+  </html>
+  
