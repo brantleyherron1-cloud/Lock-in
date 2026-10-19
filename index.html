@@ -4,204 +4,321 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#100b1c">
+<meta name="theme-color" content="#0b0d12">
 <title>Lock In — Reset Your Life</title>
 <style>
-:root{color-scheme:dark;--bg:#100b1c;--panel:#1d1530;--purple:#a78bfa;--text:#f4efff;--muted:#b6a9cc;--border:#392b50}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,sans-serif;padding:22px 16px 45px}
-main{max-width:650px;margin:auto}
-header{padding:22px 4px}
-.eyebrow{color:var(--purple);font-weight:700;letter-spacing:2px;font-size:12px}
-h1{font-size:36px;margin:8px 0}
-p{color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.stat,.panel{background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;margin-bottom:14px}
-.stat strong{display:block;font-size:24px;color:var(--purple)}
-.stat span{font-size:12px;color:var(--muted)}
-.progress{height:8px;background:#382a4e;border-radius:9px;overflow:hidden;margin:12px 0}
-#bar{height:100%;width:0;background:var(--purple);transition:width .2s}
-h2{font-size:19px;margin:0 0 14px}
-form{display:flex;gap:8px;margin-bottom:12px}
-input,textarea{min-width:0;width:100%;background:#120d20;border:1px solid var(--border);border-radius:10px;padding:12px;color:white;font:inherit}
-textarea{resize:vertical}
-button{background:var(--purple);color:#1a102b;border:0;border-radius:10px;padding:11px 14px;font-weight:750;font-size:14px;cursor:pointer}
-button:active{opacity:.8}
-ul{list-style:none;padding:0;margin:0}
-li{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--border);overflow-wrap:anywhere}
-li:last-child{border-bottom:0}
-li label{flex:1;min-width:0}
-li input[type=checkbox]{width:19px;height:19px;accent-color:var(--purple);flex-shrink:0}
-.done{text-decoration:line-through;color:var(--muted)}
-.remove{background:#38243c;color:#ffb4c0;padding:7px 10px}
-.empty{font-size:13px;color:var(--muted);padding:8px 0}
-.small{font-size:12px;color:var(--muted)}
-#reflection{min-height:110px;margin-bottom:10px}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:14px}
+:root {
+  --bg:#0b0d12; --panel:#141821; --light:#1b202b;
+  --border:#282e3b; --text:#f3f5fa; --muted:#929aab;
+  --accent:#a78bfa; --accent-light:#c4b5fd;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:Arial,Helvetica,sans-serif; line-height:1.5;
+}
+button,input,textarea { font:inherit; }
+button { cursor:pointer; }
+.container { width:min(900px,calc(100% - 28px)); margin:auto; }
+header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding:18px max(16px,calc((100% - 900px)/2));
+  border-bottom:1px solid var(--border);
+}
+.brand { color:white; font-weight:900; letter-spacing:2px; }
+.tagline { color:var(--muted); font-size:11px; letter-spacing:2px; }
+.hero { padding:40px 0 24px; }
+.eyebrow { color:var(--accent-light); font-size:11px; font-weight:bold; letter-spacing:2px; }
+h1 { font-size:clamp(38px,8vw,62px); line-height:1.08; margin:8px 0; letter-spacing:-2px; }
+h1 span { color:var(--accent); }
+.muted { color:var(--muted); }
+.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.stat,.panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; }
+.stat { padding:16px 12px; min-width:0; }
+.stat p { color:var(--muted); font-size:12px; margin:5px 0; }
+.stat strong { font-size:26px; overflow-wrap:anywhere; }
+.panel { padding:20px; margin-bottom:14px; }
+.heading { display:flex; justify-content:space-between; align-items:center; gap:10px; }
+h2 { font-size:20px; margin:0; }
+h3 { font-size:15px; margin:20px 0 8px; }
+.small { font-size:12px; color:var(--muted); }
+.track { height:9px; background:#292d39; border-radius:20px; overflow:hidden; margin-top:15px; }
+.fill { height:100%; width:0; background:linear-gradient(90deg,#8b5cf6,#c4b5fd); transition:width .2s; }
+form { display:flex; gap:8px; margin-top:14px; }
+input[type=text],textarea {
+  width:100%; min-width:0; padding:12px; color:var(--text);
+  background:#0e1118; border:1px solid var(--border); border-radius:10px;
+}
+.primary {
+  background:var(--accent); color:#171126; border:0;
+  border-radius:10px; padding:11px 15px; font-weight:bold; flex-shrink:0;
+}
+.list { display:grid; gap:8px; margin-top:14px; }
+.item {
+  display:flex; align-items:center; gap:10px; padding:11px;
+  background:var(--light); border:1px solid var(--border); border-radius:11px;
+}
+.item input { width:20px; height:20px; accent-color:var(--accent); flex-shrink:0; }
+.item span { flex:1; overflow-wrap:anywhere; }
+.item.done span { color:var(--muted); text-decoration:line-through; }
+.delete { background:transparent; color:var(--muted); border:0; padding:6px; }
+textarea { min-height:100px; resize:vertical; margin-top:10px; }
+.quote {
+  text-align:center; padding:25px 15px; margin:18px 0;
+  background:linear-gradient(135deg,#211b36,#171823);
+  border:1px solid #39304f; border-radius:16px;
+}
+.quote strong { color:var(--accent-light); letter-spacing:2px; font-size:11px; }
+footer { text-align:center; color:var(--muted); font-size:12px; padding:15px 0 30px; }
+@media(max-width:520px) {
+  .panel { padding:15px 12px; }
+  .stat { padding:12px 8px; }
+  .stat strong { font-size:22px; }
+  form { gap:6px; }
+  .primary { padding:10px; }
+}
 </style>
 </head>
 <body>
-<main>
 <header>
-<div class="eyebrow">YOUR RESET STARTS NOW</div>
-<h1>🔒 Lock In</h1>
-<p>Small steps. Better habits. A stronger you.</p>
+  <span class="brand">🔒 LOCK IN</span>
+  <span class="tagline">RESET YOUR LIFE</span>
 </header>
 
-<div class="stats">
-<div class="stat"><strong id="xp">0</strong><span>Total XP</span></div>
-<div class="stat"><strong id="level">1</strong><span>Level</span></div>
-<div class="stat"><strong id="completed">0</strong><span>Completed today</span></div>
-</div>
+<main class="container">
+<section class="hero">
+  <p class="eyebrow">YOUR PERSONAL GROWTH SPACE</p>
+  <h1>Become who you<br><span>want to be.</span></h1>
+  <p class="muted">Small steps. Every day. Real progress.</p>
+</section>
 
-<section class="panel">
-<strong id="levelLabel">Level 1 · Beginner</strong>
-<div class="progress"><div id="bar"></div></div>
-<div class="small" id="progressText">0 / 100 XP to next level</div>
+<section class="stats">
+  <article class="stat">⭐<p>Total XP</p><strong id="xp">0</strong></article>
+  <article class="stat">🏆<p>Level</p><strong id="level">1</strong></article>
+  <article class="stat">🔥<p>Day streak</p><strong id="streak">0</strong></article>
 </section>
 
 <section class="panel">
-<h2>✅ My Tasks</h2>
-<form id="taskForm"><input id="taskInput" placeholder="What needs doing?" required maxlength="120"><button>Add</button></form>
-<ul id="tasks"></ul>
+  <div class="heading">
+    <div><h2>Your progress</h2><span id="levelText" class="small">Level 1 — Just getting started!</span></div>
+    <span id="xpText" class="small">0 / 100 XP</span>
+  </div>
+  <div class="track"><div id="xpbar" class="fill"></div></div>
 </section>
 
 <section class="panel">
-<h2>🌱 My Habits</h2>
-<form id="habitForm"><input id="habitInput" placeholder="Build a good habit..." required maxlength="120"><button>Add</button></form>
-<ul id="habits"></ul>
+  <div class="heading"><h2>✅ Daily tasks</h2><span id="taskCount" class="small">0 done</span></div>
+  <p class="small">Your checkboxes reset when a new day is detected.</p>
+  <form id="taskForm"><input id="taskInput" type="text" maxlength="100" placeholder="What will you get done?" required><button class="primary">Add</button></form>
+  <div id="tasks" class="list"></div>
 </section>
 
 <section class="panel">
-<h2>🎯 My Goals</h2>
-<form id="goalForm"><input id="goalInput" placeholder="Something I want to achieve..." required maxlength="160"><button>Add</button></form>
-<ul id="goals"></ul>
+  <div class="heading"><h2>🔥 Daily habits</h2><span id="habitCount" class="small">0 done</span></div>
+  <form id="habitForm"><input id="habitInput" type="text" maxlength="100" placeholder="Add a daily habit" required><button class="primary">Add</button></form>
+  <div id="habits" class="list"></div>
 </section>
 
 <section class="panel">
-<h2>📓 Daily Reflection</h2>
-<p class="small">What went well today? What can you improve tomorrow?</p>
-<textarea id="reflection" placeholder="Write your thoughts here..."></textarea>
-<button id="saveReflection">Save reflection</button>
-<span id="reflectionStatus" class="small"></span>
+  <div class="heading"><h2>🎯 Long-term goals</h2></div>
+  <p class="small">Your goals stay saved when a new day begins.</p>
+  <form id="goalForm"><input id="goalInput" type="text" maxlength="140" placeholder="What are you working toward?" required><button class="primary">Add</button></form>
+  <div id="goals" class="list"></div>
 </section>
 
 <section class="panel">
-<h2>🔄 Fresh Start</h2>
-<p class="small">Remove your tasks, habits, goals, and reflections from this browser.</p>
-<button id="reset" class="remove">Reset all data</button>
+  <h2>📝 Daily reflection</h2>
+  <p class="small">Write something you want to remember about today.</p>
+  <textarea id="reflection" placeholder="What went well today? What can you improve?"></textarea>
+  <p id="saveStatus" class="small">Saved on this device.</p>
 </section>
 
-<footer>One day at a time. Keep showing up. 💜</footer>
+<section class="quote">
+  <strong>YOUR DAILY REMINDER</strong>
+  <p>Discipline is choosing what you want most over what you want now.</p>
+</section>
 </main>
+<footer>LOCK IN • ONE DAY AT A TIME</footer>
 
 <script>
-const KEY = "lockInDataV1";
-const $ = id => document.getElementById(id);
-const today = () => new Date().toLocaleDateString("en-CA");
+(() => {
+  const KEY = "lockInDailyResetV2";
+  const today = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+  };
 
-function fresh(){
- return {xp:0,tasks:[],habits:[],goals:[],reflections:{},day:today(),doneToday:0};
-}
-function load(){
- try{
-  const saved=JSON.parse(localStorage.getItem(KEY));
-  return saved && Array.isArray(saved.tasks) ? {...fresh(),...saved} : fresh();
- }catch(e){return fresh();}
-}
-let data=load();
+  const fresh = () => ({
+    date: today(), tasks: [], habits: [], goals: [],
+    xp: 0, streak: 0, lastDay: "", reflections: {}
+  });
 
-function save(){
- try{
-  localStorage.setItem(KEY,JSON.stringify(data));
-  return true;
- }catch(e){
-  alert("Your browser could not save data. Check browser storage settings.");
-  return false;
- }
-}
-function refreshDay(){
- if(data.day!==today()){
-  data.day=today();
-  data.doneToday=0;
-  data.tasks.forEach(x=>x.done=false);
-  data.habits.forEach(x=>x.done=false);
+  let data;
+  try {
+    data = JSON.parse(localStorage.getItem(KEY)) || fresh();
+  } catch {
+    data = fresh();
+  }
+
+  if (!Array.isArray(data.tasks)) data.tasks = [];
+  if (!Array.isArray(data.habits)) data.habits = [];
+  if (!Array.isArray(data.goals)) data.goals = [];
+  if (!data.reflections || typeof data.reflections !== "object") data.reflections = {};
+  if (!Number.isFinite(data.xp)) data.xp = 0;
+  if (!Number.isFinite(data.streak)) data.streak = 0;
+
+  // Reset only daily checkboxes when the local calendar date changes.
+  // Keep task/habit names, goals, and lifetime XP.
+  function checkNewDay() {
+    const current = today();
+    if (data.date !== current) {
+      data.tasks.forEach(x => x.done = false);
+      data.habits.forEach(x => x.done = false);
+      data.date = current;
+      save();
+    }
+  }
+
+  function save() {
+    localStorage.setItem(KEY, JSON.stringify(data));
+    renderStats();
+  }
+
+  function makeId() {
+    return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  }
+
+  function renderList(type) {
+    const el = document.getElementById(type);
+    const items = data[type];
+    el.replaceChildren();
+
+    if (!items.length) {
+      const empty = document.createElement("p");
+      empty.className = "small";
+      empty.textContent = type === "goals" ? "Add a goal you're working toward." : "Nothing here yet — add your first one above.";
+      el.append(empty);
+    }
+
+    items.forEach(item => {
+      const row = document.createElement("div");
+      row.className = "item" + (item.done ? " done" : "");
+
+      if (type !== "goals") {
+        const check = document.createElement("input");
+        check.type = "checkbox";
+        check.checked = !!item.done;
+        check.setAttribute("aria-label", "Mark " + item.text + " complete");
+        check.addEventListener("change", () => {
+          item.done = check.checked;
+          data.xp = Math.max(0, data.xp + (item.done ? 10 : -10));
+          save();
+          renderList(type);
+          renderStats();
+        });
+        row.append(check);
+      } else {
+        const icon = document.createElement("span");
+        icon.textContent = "🎯";
+        row.append(icon);
+      }
+
+      const label = document.createElement("span");
+      label.textContent = item.text;
+      row.append(label);
+
+      const del = document.createElement("button");
+      del.className = "delete";
+      del.textContent = "✕";
+      del.setAttribute("aria-label", "Delete " + item.text);
+      del.addEventListener("click", () => {
+        data[type] = data[type].filter(x => x.id !== item.id);
+        save();
+        renderList(type);
+        renderStats();
+      });
+      row.append(del);
+      el.append(row);
+    });
+
+    if (type === "tasks") {
+      document.getElementById("taskCount").textContent =
+        `${items.filter(x=>x.done).length} / ${items.length} done`;
+    }
+    if (type === "habits") {
+      document.getElementById("habitCount").textContent =
+        `${items.filter(x=>x.done).length} / ${items.length} done`;
+    }
+  }
+
+  function renderStats() {
+    const level = Math.floor(data.xp / 100) + 1;
+    const inLevel = data.xp % 100;
+    document.getElementById("xp").textContent = data.xp;
+    document.getElementById("level").textContent = level;
+    document.getElementById("streak").textContent = data.streak;
+    document.getElementById("levelText").textContent =
+      `Level ${level} — ${level === 1 ? "Just getting started!" : "Keep building your momentum!"}`;
+    document.getElementById("xpText").textContent = `${inLevel} / 100 XP`;
+    document.getElementById("xpbar").style.width = inLevel + "%";
+  }
+
+  function addItem(type, inputId) {
+    const input = document.getElementById(inputId);
+    const text = input.value.trim();
+    if (!text) return;
+    data[type].push({id:makeId(), text, done:false});
+    input.value = "";
+    save();
+    renderList(type);
+  }
+
+  document.getElementById("taskForm").addEventListener("submit", e => {
+    e.preventDefault(); addItem("tasks", "taskInput");
+  });
+  document.getElementById("habitForm").addEventListener("submit", e => {
+    e.preventDefault(); addItem("habits", "habitInput");
+  });
+  document.getElementById("goalForm").addEventListener("submit", e => {
+    e.preventDefault(); addItem("goals", "goalInput");
+  });
+
+  const reflection = document.getElementById("reflection");
+  function loadReflection() {
+    reflection.value = data.reflections[today()] || "";
+  }
+  reflection.addEventListener("input", () => {
+    data.reflections[today()] = reflection.value;
+    save();
+    document.getElementById("saveStatus").textContent = "Saved on this device.";
+  });
+
+  // Check again whenever the app becomes visible or returns to the foreground.
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      checkNewDay();
+      renderAll();
+      loadReflection();
+    }
+  });
+  window.addEventListener("focus", () => {
+    checkNewDay();
+    renderAll();
+    loadReflection();
+  });
+
+  function renderAll() {
+    renderList("tasks");
+    renderList("habits");
+    renderList("goals");
+    renderStats();
+  }
+
+  checkNewDay();
   save();
- }
-}
-function escapeText(s){
- return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-}
-function award(item){
- if(item.done){data.xp+=10;data.doneToday++;}
- else{data.xp=Math.max(0,data.xp-10);data.doneToday=Math.max(0,data.doneToday-1);}
- save();renderStats();
-}
-function renderList(id,items,type){
- const ul=$(id);
- ul.innerHTML="";
- if(!items.length){
-  ul.innerHTML='<li class="empty">Nothing here yet — add your first one!</li>';
-  return;
- }
- items.forEach(item=>{
-  const li=document.createElement("li");
-  li.innerHTML='<input type="checkbox" '+(item.done?'checked':'')+' aria-label="Mark complete"><label class="'+(item.done?'done':'')+'">'+escapeText(item.text)+'</label><button class="remove" aria-label="Delete item">×</button>';
-  li.querySelector('input').addEventListener('change',e=>{
-   item.done=e.target.checked;award(item);renderList(id,items,type);
-  });
-  li.querySelector('button').addEventListener('click',()=>{
-   if(item.done){data.doneToday=Math.max(0,data.doneToday-1);data.xp=Math.max(0,data.xp-10);}
-   data[type]=items.filter(x=>x.id!==item.id);
-   save();render();
-  });
-  ul.appendChild(li);
- });
-}
-function renderStats(){
- const level=Math.floor(data.xp/100)+1;
- const inLevel=data.xp%100;
- $("xp").textContent=data.xp;
- $("level").textContent=level;
- $("completed").textContent=data.doneToday;
- $("levelLabel").textContent="Level "+level+" · "+(level<3?"Beginner":level<6?"Building Momentum":"Locked In");
- $("bar").style.width=inLevel+"%";
- $("progressText").textContent=inLevel+" / 100 XP to next level";
-}
-function render(){
- refreshDay();
- renderStats();
- renderList("tasks",data.tasks,"tasks");
- renderList("habits",data.habits,"habits");
- renderList("goals",data.goals,"goals");
- $("reflection").value=data.reflections[today()]||"";
- $("reflectionStatus").textContent="";
-}
-function addItem(formId,inputId,type){
- $(formId).addEventListener("submit",e=>{
-  e.preventDefault();
-  const text=$(inputId).value.trim();
-  if(!text)return;
-  data[type].push({id:Date.now().toString()+Math.random().toString(16).slice(2),text,done:false});
-  $(inputId).value="";
-  save();render();
- });
-}
-addItem("taskForm","taskInput","tasks");
-addItem("habitForm","habitInput","habits");
-addItem("goalForm","goalInput","goals");
-
-$("saveReflection").addEventListener("click",()=>{
- data.reflections[today()]=$("reflection").value;
- if(save())$("reflectionStatus").textContent=" Saved on this device ✓";
-});
-$("reset").addEventListener("click",()=>{
- if(confirm("Delete all Lock In data saved in this browser?")){
-  data=fresh();save();render();
- }
-});
-render();
+  renderAll();
+  loadReflection();
+})();
 </script>
 </body>
-  </html>
-  
+</html>
