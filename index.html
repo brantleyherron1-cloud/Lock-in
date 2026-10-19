@@ -2,323 +2,790 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#0b0d12">
-<title>Lock In — Reset Your Life</title>
-<style>
-:root {
-  --bg:#0b0d12; --panel:#141821; --light:#1b202b;
-  --border:#282e3b; --text:#f3f5fa; --muted:#929aab;
-  --accent:#a78bfa; --accent-light:#c4b5fd;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0; background:var(--bg); color:var(--text);
-  font-family:Arial,Helvetica,sans-serif; line-height:1.5;
-}
-button,input,textarea { font:inherit; }
-button { cursor:pointer; }
-.container { width:min(900px,calc(100% - 28px)); margin:auto; }
-header {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:18px max(16px,calc((100% - 900px)/2));
-  border-bottom:1px solid var(--border);
-}
-.brand { color:white; font-weight:900; letter-spacing:2px; }
-.tagline { color:var(--muted); font-size:11px; letter-spacing:2px; }
-.hero { padding:40px 0 24px; }
-.eyebrow { color:var(--accent-light); font-size:11px; font-weight:bold; letter-spacing:2px; }
-h1 { font-size:clamp(38px,8vw,62px); line-height:1.08; margin:8px 0; letter-spacing:-2px; }
-h1 span { color:var(--accent); }
-.muted { color:var(--muted); }
-.stats { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
-.stat,.panel { background:var(--panel); border:1px solid var(--border); border-radius:16px; }
-.stat { padding:16px 12px; min-width:0; }
-.stat p { color:var(--muted); font-size:12px; margin:5px 0; }
-.stat strong { font-size:26px; overflow-wrap:anywhere; }
-.panel { padding:20px; margin-bottom:14px; }
-.heading { display:flex; justify-content:space-between; align-items:center; gap:10px; }
-h2 { font-size:20px; margin:0; }
-h3 { font-size:15px; margin:20px 0 8px; }
-.small { font-size:12px; color:var(--muted); }
-.track { height:9px; background:#292d39; border-radius:20px; overflow:hidden; margin-top:15px; }
-.fill { height:100%; width:0; background:linear-gradient(90deg,#8b5cf6,#c4b5fd); transition:width .2s; }
-form { display:flex; gap:8px; margin-top:14px; }
-input[type=text],textarea {
-  width:100%; min-width:0; padding:12px; color:var(--text);
-  background:#0e1118; border:1px solid var(--border); border-radius:10px;
-}
-.primary {
-  background:var(--accent); color:#171126; border:0;
-  border-radius:10px; padding:11px 15px; font-weight:bold; flex-shrink:0;
-}
-.list { display:grid; gap:8px; margin-top:14px; }
-.item {
-  display:flex; align-items:center; gap:10px; padding:11px;
-  background:var(--light); border:1px solid var(--border); border-radius:11px;
-}
-.item input { width:20px; height:20px; accent-color:var(--accent); flex-shrink:0; }
-.item span { flex:1; overflow-wrap:anywhere; }
-.item.done span { color:var(--muted); text-decoration:line-through; }
-.delete { background:transparent; color:var(--muted); border:0; padding:6px; }
-textarea { min-height:100px; resize:vertical; margin-top:10px; }
-.quote {
-  text-align:center; padding:25px 15px; margin:18px 0;
-  background:linear-gradient(135deg,#211b36,#171823);
-  border:1px solid #39304f; border-radius:16px;
-}
-.quote strong { color:var(--accent-light); letter-spacing:2px; font-size:11px; }
-footer { text-align:center; color:var(--muted); font-size:12px; padding:15px 0 30px; }
-@media(max-width:520px) {
-  .panel { padding:15px 12px; }
-  .stat { padding:12px 8px; }
-  .stat strong { font-size:22px; }
-  form { gap:6px; }
-  .primary { padding:10px; }
-}
-</style>
-</head>
-<body>
-<header>
-  <span class="brand">🔒 LOCK IN</span>
-  <span class="tagline">RESET YOUR LIFE</span>
-</header>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#100b1d">
+  <title>Lock In — Reset Your Life</title>
 
-<main class="container">
-<section class="hero">
-  <p class="eyebrow">YOUR PERSONAL GROWTH SPACE</p>
-  <h1>Become who you<br><span>want to be.</span></h1>
-  <p class="muted">Small steps. Every day. Real progress.</p>
-</section>
-
-<section class="stats">
-  <article class="stat">⭐<p>Total XP</p><strong id="xp">0</strong></article>
-  <article class="stat">🏆<p>Level</p><strong id="level">1</strong></article>
-  <article class="stat">🔥<p>Day streak</p><strong id="streak">0</strong></article>
-</section>
-
-<section class="panel">
-  <div class="heading">
-    <div><h2>Your progress</h2><span id="levelText" class="small">Level 1 — Just getting started!</span></div>
-    <span id="xpText" class="small">0 / 100 XP</span>
-  </div>
-  <div class="track"><div id="xpbar" class="fill"></div></div>
-</section>
-
-<section class="panel">
-  <div class="heading"><h2>✅ Daily tasks</h2><span id="taskCount" class="small">0 done</span></div>
-  <p class="small">Your checkboxes reset when a new day is detected.</p>
-  <form id="taskForm"><input id="taskInput" type="text" maxlength="100" placeholder="What will you get done?" required><button class="primary">Add</button></form>
-  <div id="tasks" class="list"></div>
-</section>
-
-<section class="panel">
-  <div class="heading"><h2>🔥 Daily habits</h2><span id="habitCount" class="small">0 done</span></div>
-  <form id="habitForm"><input id="habitInput" type="text" maxlength="100" placeholder="Add a daily habit" required><button class="primary">Add</button></form>
-  <div id="habits" class="list"></div>
-</section>
-
-<section class="panel">
-  <div class="heading"><h2>🎯 Long-term goals</h2></div>
-  <p class="small">Your goals stay saved when a new day begins.</p>
-  <form id="goalForm"><input id="goalInput" type="text" maxlength="140" placeholder="What are you working toward?" required><button class="primary">Add</button></form>
-  <div id="goals" class="list"></div>
-</section>
-
-<section class="panel">
-  <h2>📝 Daily reflection</h2>
-  <p class="small">Write something you want to remember about today.</p>
-  <textarea id="reflection" placeholder="What went well today? What can you improve?"></textarea>
-  <p id="saveStatus" class="small">Saved on this device.</p>
-</section>
-
-<section class="quote">
-  <strong>YOUR DAILY REMINDER</strong>
-  <p>Discipline is choosing what you want most over what you want now.</p>
-</section>
-</main>
-<footer>LOCK IN • ONE DAY AT A TIME</footer>
-
-<script>
-(() => {
-  const KEY = "lockInDailyResetV2";
-  const today = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
-  };
-
-  const fresh = () => ({
-    date: today(), tasks: [], habits: [], goals: [],
-    xp: 0, streak: 0, lastDay: "", reflections: {}
-  });
-
-  let data;
-  try {
-    data = JSON.parse(localStorage.getItem(KEY)) || fresh();
-  } catch {
-    data = fresh();
-  }
-
-  if (!Array.isArray(data.tasks)) data.tasks = [];
-  if (!Array.isArray(data.habits)) data.habits = [];
-  if (!Array.isArray(data.goals)) data.goals = [];
-  if (!data.reflections || typeof data.reflections !== "object") data.reflections = {};
-  if (!Number.isFinite(data.xp)) data.xp = 0;
-  if (!Number.isFinite(data.streak)) data.streak = 0;
-
-  // Reset only daily checkboxes when the local calendar date changes.
-  // Keep task/habit names, goals, and lifetime XP.
-  function checkNewDay() {
-    const current = today();
-    if (data.date !== current) {
-      data.tasks.forEach(x => x.done = false);
-      data.habits.forEach(x => x.done = false);
-      data.date = current;
-      save();
-    }
-  }
-
-  function save() {
-    localStorage.setItem(KEY, JSON.stringify(data));
-    renderStats();
-  }
-
-  function makeId() {
-    return Date.now().toString(36) + Math.random().toString(36).slice(2,7);
-  }
-
-  function renderList(type) {
-    const el = document.getElementById(type);
-    const items = data[type];
-    el.replaceChildren();
-
-    if (!items.length) {
-      const empty = document.createElement("p");
-      empty.className = "small";
-      empty.textContent = type === "goals" ? "Add a goal you're working toward." : "Nothing here yet — add your first one above.";
-      el.append(empty);
+  <style>
+    :root {
+      --bg: #100b1d;
+      --panel: #1b142b;
+      --panel2: #251b38;
+      --purple: #a78bfa;
+      --purple2: #8b5cf6;
+      --text: #f5f3ff;
+      --muted: #aaa0bd;
+      --green: #6ee7b7;
+      --border: #38294d;
     }
 
-    items.forEach(item => {
-      const row = document.createElement("div");
-      row.className = "item" + (item.done ? " done" : "");
+    * {
+      box-sizing: border-box;
+    }
 
-      if (type !== "goals") {
-        const check = document.createElement("input");
-        check.type = "checkbox";
-        check.checked = !!item.done;
-        check.setAttribute("aria-label", "Mark " + item.text + " complete");
-        check.addEventListener("change", () => {
-          item.done = check.checked;
-          data.xp = Math.max(0, data.xp + (item.done ? 10 : -10));
-          save();
-          renderList(type);
-          renderStats();
-        });
-        row.append(check);
-      } else {
-        const icon = document.createElement("span");
-        icon.textContent = "🎯";
-        row.append(icon);
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at top, #291747 0%, var(--bg) 55%);
+      color: var(--text);
+      font-family: system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 25px 18px 15px;
+      max-width: 850px;
+      margin: auto;
+    }
+
+    .brand {
+      color: var(--purple);
+      font-size: 13px;
+      font-weight: 900;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(30px, 7vw, 45px);
+      margin: 8px 0;
+      line-height: 1.1;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      margin: 0;
+    }
+
+    main {
+      max-width: 850px;
+      margin: auto;
+      padding: 10px 18px 50px;
+    }
+
+    .panel {
+      background: rgba(27, 20, 43, 0.96);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.15);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 15px 8px;
+      border-radius: 15px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 25px;
+      font-weight: 850;
+      color: var(--purple);
+    }
+
+    .stat-label {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: 3px;
+    }
+
+    h2 {
+      margin: 0 0 7px;
+      font-size: 21px;
+    }
+
+    .description {
+      color: var(--muted);
+      font-size: 13px;
+      margin: 0 0 17px;
+    }
+
+    .progress-track {
+      height: 9px;
+      background: #352747;
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 12px 0 7px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--purple2), var(--green));
+      border-radius: 20px;
+      transition: width 0.25s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 12px;
+      background: var(--panel2);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      margin-top: 9px;
+    }
+
+    .item:has(input:checked) {
+      border-color: #4b3767;
+    }
+
+    .item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: var(--purple2);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .item label {
+      flex: 1;
+      cursor: pointer;
+      line-height: 1.4;
+    }
+
+    .item input:checked + label {
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .tag {
+      font-size: 11px;
+      color: var(--purple);
+      background: #382650;
+      border-radius: 20px;
+      padding: 5px 8px;
+      white-space: nowrap;
+    }
+
+    .add-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 13px;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      background: #120d20;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 10px;
+      padding: 12px;
+      font: inherit;
+      outline: none;
+    }
+
+    input[type="text"]:focus,
+    textarea:focus {
+      border-color: var(--purple);
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 15px;
+      background: var(--purple2);
+      color: white;
+      font-weight: 750;
+      font-size: 14px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    .secondary {
+      background: #352747;
+      color: var(--text);
+    }
+
+    .delete-button {
+      padding: 7px 10px;
+      background: #482234;
+      color: #ffb4c6;
+      font-size: 12px;
+    }
+
+    .goal-card {
+      padding: 15px;
+      margin-top: 11px;
+      background: linear-gradient(135deg, #261a3b, #1b142b);
+      border: 1px solid #49345f;
+      border-radius: 14px;
+    }
+
+    .goal-top {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .goal-name {
+      flex: 1;
+      font-weight: 750;
+      overflow-wrap: anywhere;
+    }
+
+    .goal-progress-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 12px;
+    }
+
+    .goal-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .goal-actions button {
+      flex: 1;
+    }
+
+    .goal-complete {
+      color: var(--green);
+      font-size: 12px;
+      margin-top: 8px;
+    }
+
+    textarea {
+      min-height: 95px;
+      resize: vertical;
+      margin-top: 10px;
+    }
+
+    .reflection-question {
+      margin-top: 17px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .saved-message {
+      color: var(--green);
+      font-size: 13px;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+
+    .empty {
+      color: var(--muted);
+      text-align: center;
+      padding: 18px 8px;
+      font-size: 13px;
+    }
+
+    .footer {
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+      padding: 10px 0 20px;
+    }
+
+    @media (max-width: 420px) {
+      .panel {
+        padding: 15px;
       }
 
-      const label = document.createElement("span");
-      label.textContent = item.text;
-      row.append(label);
+      .tag {
+        display: none;
+      }
 
-      const del = document.createElement("button");
-      del.className = "delete";
-      del.textContent = "✕";
-      del.setAttribute("aria-label", "Delete " + item.text);
-      del.addEventListener("click", () => {
-        data[type] = data[type].filter(x => x.id !== item.id);
-        save();
-        renderList(type);
-        renderStats();
+      .add-row {
+        flex-wrap: wrap;
+      }
+
+      .add-row input {
+        min-width: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">✦ LOCK IN</div>
+    <h1>Reset your life.</h1>
+    <p class="subtitle" id="today">One day at a time. One win at a time.</p>
+  </header>
+
+  <main>
+    <section class="stats">
+      <div class="stat">
+        <div class="stat-number" id="xp">0</div>
+        <div class="stat-label">TOTAL XP</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="level">1</div>
+        <div class="stat-label">LEVEL</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number" id="doneCount">0/0</div>
+        <div class="stat-label">TODAY'S WINS</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Your daily progress</h2>
+      <p class="description">Small steps count. Keep showing up.</p>
+      <div class="progress-track">
+        <div class="progress-fill" id="dailyBar"></div>
+      </div>
+      <div class="progress-text" id="dailyText">0% complete</div>
+    </section>
+
+    <section class="panel">
+      <h2>⚡ Daily tasks</h2>
+      <p class="description">Get the important stuff done today.</p>
+      <div id="tasks"></div>
+      <div class="add-row">
+        <input id="taskInput" type="text" placeholder="Add a task..." maxlength="100">
+        <button onclick="addTask()">+ Add</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>🌱 Daily habits</h2>
+      <p class="description">Build routines that help you grow.</p>
+      <div id="habits"></div>
+      <div class="add-row">
+        <input id="habitInput" type="text" placeholder="Add a habit..." maxlength="100">
+        <button onclick="addHabit()">+ Add</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>🎯 Your goals</h2>
+      <p class="description">Big goals become easier when you break them down.</p>
+      <div id="goals"></div>
+      <div class="add-row">
+        <input id="goalInput" type="text" placeholder="What do you want to achieve?" maxlength="120">
+        <button onclick="addGoal()">+ Goal</button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>🪞 Daily reflection</h2>
+      <p class="description">Take a minute to think about your day.</p>
+
+      <div class="reflection-question">
+        1. What went well today?
+      </div>
+      <textarea id="reflectionGood" placeholder="Write your wins here..."></textarea>
+
+      <div class="reflection-question">
+        2. What could you improve?
+      </div>
+      <textarea id="reflectionImprove" placeholder="Be honest with yourself..."></textarea>
+
+      <div class="reflection-question">
+        3. What is your focus for tomorrow?
+      </div>
+      <textarea id="reflectionFocus" placeholder="Choose one thing to focus on..."></textarea>
+
+      <div class="add-row">
+        <button onclick="saveReflection()">Save reflection</button>
+        <button class="secondary" onclick="loadReflection()">Load saved</button>
+      </div>
+
+      <div class="saved-message" id="reflectionMessage"></div>
+    </section>
+
+    <section class="panel">
+      <h2>💜 Remember</h2>
+      <p class="description" style="margin-bottom:0">
+        You don't have to be perfect. You just have to keep trying.
+        Rest when you need to, learn from mistakes, and take the next step.
+      </p>
+    </section>
+
+    <div class="footer">
+      LOCK IN • YOUR JOURNEY, YOUR PACE
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "lockInCompleteWebsiteV1";
+
+    const defaultTasks = [
+      { id: 1, text: "Make my bed", done: false },
+      { id: 2, text: "Finish schoolwork or important work", done: false },
+      { id: 3, text: "Spend 10 minutes tidying up", done: false },
+      { id: 4, text: "Take a break and recharge", done: false }
+    ];
+
+    const defaultHabits = [
+      { id: 101, text: "Drink water throughout the day", done: false },
+      { id: 102, text: "Read or learn something", done: false },
+      { id: 103, text: "Move my body in a way I enjoy", done: false },
+      { id: 104, text: "Get ready for tomorrow", done: false }
+    ];
+
+    let state = {
+      date: localDate(),
+      xp: 0,
+      tasks: defaultTasks,
+      habits: defaultHabits,
+      goals: [],
+      nextId: 200,
+      reflections: {}
+    };
+
+    function localDate() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, "0");
+      const day = String(now.getDate()).padStart(2, "0");
+      return year + "-" + month + "-" + day;
+    }
+
+    function readState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          state = { ...state, ...parsed };
+        }
+      } catch (error) {
+        console.log("Could not load saved progress.", error);
+      }
+
+      if (!Array.isArray(state.tasks)) state.tasks = defaultTasks;
+      if (!Array.isArray(state.habits)) state.habits = defaultHabits;
+      if (!Array.isArray(state.goals)) state.goals = [];
+      if (!state.reflections || typeof state.reflections !== "object") {
+        state.reflections = {};
+      }
+
+      resetDailyItemsIfNeeded();
+    }
+
+    function saveState() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (error) {
+        console.log("Could not save progress.", error);
+      }
+    }
+
+    function resetDailyItemsIfNeeded() {
+      const today = localDate();
+
+      if (state.date !== today) {
+        state.date = today;
+        state.tasks.forEach(task => task.done = false);
+        state.habits.forEach(habit => habit.done = false);
+        saveState();
+      }
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, character => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#039;"
+      })[character]);
+    }
+
+    function renderDate() {
+      const formatted = new Date().toLocaleDateString(undefined, {
+        weekday: "long",
+        month: "long",
+        day: "numeric"
       });
-      row.append(del);
-      el.append(row);
+
+      document.getElementById("today").textContent =
+        formatted + " • Make today count.";
+    }
+
+    function renderChecklist(containerId, items, type) {
+      const container = document.getElementById(containerId);
+
+      if (items.length === 0) {
+        container.innerHTML = '<div class="empty">Nothing here yet. Add your first one below!</div>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <div class="item">
+          <input
+            type="checkbox"
+            id="${type}-${item.id}"
+            ${item.done ? "checked" : ""}
+            onchange="toggleItem('${type}', ${item.id}, this.checked)"
+          >
+          <label for="${type}-${item.id}">${escapeHTML(item.text)}</label>
+          <button class="delete-button"
+            onclick="deleteItem('${type}', ${item.id})"
+            aria-label="Delete ${escapeHTML(item.text)}">✕</button>
+        </div>
+      `).join("");
+    }
+
+    function renderGoals() {
+      const container = document.getElementById("goals");
+
+      if (state.goals.length === 0) {
+        container.innerHTML = '<div class="empty">Your goals will appear here. Start with one small goal!</div>';
+        return;
+      }
+
+      container.innerHTML = state.goals.map(goal => {
+        const percent = goal.target > 0
+          ? Math.min(100, Math.round(goal.progress / goal.target * 100))
+          : 0;
+
+        const complete = goal.progress >= goal.target;
+
+        return `
+          <div class="goal-card">
+            <div class="goal-top">
+              <div class="goal-name">${escapeHTML(goal.text)}</div>
+              <button class="delete-button" onclick="deleteGoal(${goal.id})">Delete</button>
+            </div>
+
+            <div class="goal-progress-label">
+              <span>Progress</span>
+              <span>${goal.progress} / ${goal.target}</span>
+            </div>
+
+            <div class="progress-track">
+              <div class="progress-fill" style="width:${percent}%"></div>
+            </div>
+
+            ${complete ? '<div class="goal-complete">✓ Goal completed!</div>' : ""}
+
+            <div class="goal-actions">
+              <button class="secondary"
+                onclick="changeGoalProgress(${goal.id}, -1)"
+                ${goal.progress <= 0 ? "disabled" : ""}>− Step</button>
+              <button onclick="changeGoalProgress(${goal.id}, 1)"
+                ${complete ? "disabled" : ""}>+ Step</button>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    function renderStats() {
+      const allItems = [...state.tasks, ...state.habits];
+      const completed = allItems.filter(item => item.done).length;
+      const total = allItems.length;
+      const percent = total ? Math.round(completed / total * 100) : 0;
+
+      document.getElementById("xp").textContent = state.xp;
+      document.getElementById("level").textContent =
+        Math.floor(state.xp / 100) + 1;
+      document.getElementById("doneCount").textContent =
+        completed + "/" + total;
+
+      document.getElementById("dailyBar").style.width = percent + "%";
+      document.getElementById("dailyText").textContent =
+        percent + "% complete • " + (total - completed) + " left to go";
+    }
+
+    function renderAll() {
+      renderDate();
+      renderChecklist("tasks", state.tasks, "task");
+      renderChecklist("habits", state.habits, "habit");
+      renderGoals();
+      renderStats();
+    }
+
+    function toggleItem(type, id, checked) {
+      const list = type === "task" ? state.tasks : state.habits;
+      const item = list.find(entry => entry.id === id);
+
+      if (!item) return;
+
+      if (item.done !== checked) {
+        item.done = checked;
+        state.xp = Math.max(0, state.xp + (checked ? 10 : -10));
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function addTask() {
+      const input = document.getElementById("taskInput");
+      const text = input.value.trim();
+
+      if (!text) {
+        input.focus();
+        return;
+      }
+
+      state.tasks.push({
+        id: state.nextId++,
+        text,
+        done: false
+      });
+
+      input.value = "";
+      saveState();
+      renderAll();
+    }
+
+    function addHabit() {
+      const input = document.getElementById("habitInput");
+      const text = input.value.trim();
+
+      if (!text) {
+        input.focus();
+        return;
+      }
+
+      state.habits.push({
+        id: state.nextId++,
+        text,
+        done: false
+      });
+
+      input.value = "";
+      saveState();
+      renderAll();
+    }
+
+    function deleteItem(type, id) {
+      const list = type === "task" ? state.tasks : state.habits;
+      const index = list.findIndex(item => item.id === id);
+
+      if (index === -1) return;
+
+      if (list[index].done) {
+        state.xp = Math.max(0, state.xp - 10);
+      }
+
+      list.splice(index, 1);
+      saveState();
+      renderAll();
+    }
+
+    function addGoal() {
+      const input = document.getElementById("goalInput");
+      const text = input.value.trim();
+
+      if (!text) {
+        input.focus();
+        return;
+      }
+
+      state.goals.push({
+        id: state.nextId++,
+        text,
+        progress: 0,
+        target: 5
+      });
+
+      input.value = "";
+      saveState();
+      renderAll();
+    }
+
+    function changeGoalProgress(id, amount) {
+      const goal = state.goals.find(item => item.id === id);
+      if (!goal) return;
+
+      const oldProgress = goal.progress;
+      goal.progress = Math.max(
+        0,
+        Math.min(goal.target, goal.progress + amount)
+      );
+
+      if (goal.progress !== oldProgress) {
+        state.xp = Math.max(0, state.xp + amount * 5);
+      }
+
+      saveState();
+      renderAll();
+    }
+
+    function deleteGoal(id) {
+      state.goals = state.goals.filter(goal => goal.id !== id);
+      saveState();
+      renderAll();
+    }
+
+    function saveReflection() {
+      const good = document.getElementById("reflectionGood").value;
+      const improve = document.getElementById("reflectionImprove").value;
+      const focus = document.getElementById("reflectionFocus").value;
+
+      state.reflections[state.date] = {
+        good,
+        improve,
+        focus
+      };
+
+      saveState();
+
+      document.getElementById("reflectionMessage").textContent =
+        "✓ Reflection saved for today!";
+    }
+
+    function loadReflection() {
+      const reflection = state.reflections[state.date];
+
+      document.getElementById("reflectionGood").value =
+        reflection ? reflection.good : "";
+      document.getElementById("reflectionImprove").value =
+        reflection ? reflection.improve : "";
+      document.getElementById("reflectionFocus").value =
+        reflection ? reflection.focus : "";
+
+      document.getElementById("reflectionMessage").textContent =
+        reflection
+          ? "Your saved reflection is loaded."
+          : "No reflection saved for today yet.";
+    }
+
+    document.getElementById("taskInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") addTask();
     });
 
-    if (type === "tasks") {
-      document.getElementById("taskCount").textContent =
-        `${items.filter(x=>x.done).length} / ${items.length} done`;
-    }
-    if (type === "habits") {
-      document.getElementById("habitCount").textContent =
-        `${items.filter(x=>x.done).length} / ${items.length} done`;
-    }
-  }
+    document.getElementById("habitInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") addHabit();
+    });
 
-  function renderStats() {
-    const level = Math.floor(data.xp / 100) + 1;
-    const inLevel = data.xp % 100;
-    document.getElementById("xp").textContent = data.xp;
-    document.getElementById("level").textContent = level;
-    document.getElementById("streak").textContent = data.streak;
-    document.getElementById("levelText").textContent =
-      `Level ${level} — ${level === 1 ? "Just getting started!" : "Keep building your momentum!"}`;
-    document.getElementById("xpText").textContent = `${inLevel} / 100 XP`;
-    document.getElementById("xpbar").style.width = inLevel + "%";
-  }
+    document.getElementById("goalInput").addEventListener("keydown", event => {
+      if (event.key === "Enter") addGoal();
+    });
 
-  function addItem(type, inputId) {
-    const input = document.getElementById(inputId);
-    const text = input.value.trim();
-    if (!text) return;
-    data[type].push({id:makeId(), text, done:false});
-    input.value = "";
-    save();
-    renderList(type);
-  }
-
-  document.getElementById("taskForm").addEventListener("submit", e => {
-    e.preventDefault(); addItem("tasks", "taskInput");
-  });
-  document.getElementById("habitForm").addEventListener("submit", e => {
-    e.preventDefault(); addItem("habits", "habitInput");
-  });
-  document.getElementById("goalForm").addEventListener("submit", e => {
-    e.preventDefault(); addItem("goals", "goalInput");
-  });
-
-  const reflection = document.getElementById("reflection");
-  function loadReflection() {
-    reflection.value = data.reflections[today()] || "";
-  }
-  reflection.addEventListener("input", () => {
-    data.reflections[today()] = reflection.value;
-    save();
-    document.getElementById("saveStatus").textContent = "Saved on this device.";
-  });
-
-  // Check again whenever the app becomes visible or returns to the foreground.
-  document.addEventListener("visibilitychange", () => {
-    if (!document.hidden) {
-      checkNewDay();
-      renderAll();
-      loadReflection();
-    }
-  });
-  window.addEventListener("focus", () => {
-    checkNewDay();
+    readState();
     renderAll();
     loadReflection();
-  });
 
-  function renderAll() {
-    renderList("tasks");
-    renderList("habits");
-    renderList("goals");
-    renderStats();
-  }
-
-  checkNewDay();
-  save();
-  renderAll();
-  loadReflection();
-})();
-</script>
+    document.addEventListener("visibilitychange", () => {
+      if (!document.hidden) {
+        resetDailyItemsIfNeeded();
+        renderAll();
+      }
+    });
+  </script>
 </body>
 </html>
